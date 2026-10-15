@@ -1,16 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export function Brand({ compact = false }: { compact?: boolean }) {
+export function Brand() {
   return (
     <Link href="/" className="brand" aria-label="K4 Ingressos — início">
-      <Image src="/brand/duck.png" alt="" width={52} height={52} priority />
-      <span>
-        <strong>
-          K4<span className="brand-dot">.</span>
-        </strong>
-        {!compact && <small>INGRESSOS</small>}
-      </span>
+      <Image
+        src="/brand/k4-logo.png"
+        alt="K4 Lounge"
+        width={160}
+        height={160}
+        priority
+      />
     </Link>
   );
 }
@@ -24,7 +24,7 @@ export function SiteHeader() {
           K4 LOUNGE <span aria-hidden="true">/</span> INGRESSOS DIGITAIS
         </span>
         <Link className="text-link header-admin" href="/admin" prefetch={false}>
-          Área administrativa <span aria-hidden="true">↗</span>
+          Área administrativa
         </Link>
       </div>
     </header>

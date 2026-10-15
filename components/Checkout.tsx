@@ -8,7 +8,7 @@ import type {
   PurchaseResult,
   SalesAvailability,
 } from "@/lib/domain/types";
-import { isValidCpf, isValidFullName } from "@/lib/domain/rules";
+import { formatManaus, isValidCpf, isValidFullName } from "@/lib/domain/rules";
 import { formatCpfInput, money, requestJson } from "./Format";
 import { Icon } from "./Icons";
 
@@ -20,7 +20,13 @@ const availabilityText: Record<SalesAvailability, string> = {
   closed: "Vendas encerradas",
 };
 
-export function Checkout({ event }: { event: PublicEvent }) {
+export function Checkout({
+  event,
+  showEventSummary = false,
+}: {
+  event: PublicEvent;
+  showEventSummary?: boolean;
+}) {
   const router = useRouter();
   const [fullName, setFullName] = useState("");
   const [cpf, setCpf] = useState("");
@@ -35,7 +41,7 @@ export function Checkout({ event }: { event: PublicEvent }) {
   const purchaseRef = useRef<{ fingerprint: string; key: string } | null>(null);
   const canBuy =
     event.availability === "open" &&
-    event.paymentMode === "simulated" &&
+    ["simulated", "demo"].includes(event.paymentMode) &&
     event.isDemo;
 
   async function submit(e: FormEvent<HTMLFormElement>) {
@@ -93,6 +99,15 @@ export function Checkout({ event }: { event: PublicEvent }) {
         <span className="eyebrow">INGRESSO INDIVIDUAL</span>
         <Icon name="ticket" size={25} />
       </div>
+      {showEventSummary && (
+        <div className="checkout-event-summary">
+          <h2>{event.title}</h2>
+          <p>
+            <Icon name="calendar" size={16} />
+            <span>{formatManaus(event.eventStartsAt)}</span>
+          </p>
+        </div>
+      )}
       <div className="checkout-price">
         {money(event.priceCents)}
         <span className="badge badge-subtle">Sem taxa</span>
@@ -104,13 +119,13 @@ export function Checkout({ event }: { event: PublicEvent }) {
         <span className="tiny-dot" />
         {availabilityText[event.availability]}
       </div>
-      {event.paymentMode === "simulated" && (
+      {["simulated", "demo"].includes(event.paymentMode) && (
         <div className="notice notice-test">
           <Icon name="shield" />
           <p>
             <strong>Ambiente de teste</strong>
             <br />
-            Nenhum pagamento real.
+            Nenhum pagamento real. Use apenas dados fictícios.
           </p>
         </div>
       )}
@@ -216,7 +231,10 @@ export function Checkout({ event }: { event: PublicEvent }) {
               </>
             ) : (
               <>
-                Continuar em ambiente de teste <Icon name="arrow" />
+                {event.paymentMode === "demo"
+                  ? "Gerar ingresso de teste"
+                  : "Continuar em ambiente de teste"}{" "}
+                <Icon name="arrow" />
               </>
             )}
           </button>

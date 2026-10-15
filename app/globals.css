@@ -184,33 +184,13 @@ svg {
 }
 .brand {
   display: flex;
-  gap: 11px;
   align-items: center;
   flex-shrink: 0;
 }
 .brand > img {
-  width: 49px;
-  height: 49px;
+  width: 100px;
+  height: 100px;
   object-fit: contain;
-}
-.brand > span {
-  display: flex;
-  flex-direction: column;
-}
-.brand strong {
-  font-size: 29px;
-  line-height: 1;
-  font-weight: 900;
-  letter-spacing: -0.07em;
-}
-.brand-dot {
-  color: var(--yellow);
-}
-.brand small {
-  font-size: 9px;
-  letter-spacing: 0.15em;
-  font-weight: 700;
-  margin-top: 5px;
 }
 .header-label {
   font-size: 10px;
@@ -225,6 +205,7 @@ svg {
 .header-admin {
   color: var(--muted);
   font-size: 12px;
+  min-height: 44px;
 }
 .site-footer {
   border-top: 1px solid var(--line);
@@ -245,6 +226,12 @@ svg {
   display: flex;
   gap: 27px;
   color: var(--muted);
+  flex-wrap: wrap;
+}
+.footer-inner nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
 }
 .footer-inner a:hover {
   color: var(--white);
@@ -365,6 +352,62 @@ svg {
   font-size: 18px;
   letter-spacing: -0.015em;
 }
+.home-booking {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "intro" "checkout" "details";
+  gap: 35px;
+  align-items: start;
+  padding-block: 40px 50px;
+}
+.home-booking > *,
+.event-layout > *,
+.order-layout > * {
+  min-width: 0;
+}
+.home-booking-intro {
+  grid-area: intro;
+}
+.home-booking .hero-copy h1 {
+  font-size: clamp(40px, 10vw, 64px);
+}
+.home-booking > .event-details {
+  grid-area: details;
+  padding-top: 8px;
+}
+.home-booking > .checkout-panel {
+  grid-area: checkout;
+}
+.home-booking .event-title-row h2 {
+  font-size: clamp(28px, 3.2vw, 40px);
+  margin-bottom: 24px;
+}
+.home-booking .event-details > .eyebrow {
+  margin-bottom: 20px;
+}
+.checkout-event-summary {
+  margin-top: 22px;
+}
+.checkout-event-summary h2 {
+  font-size: 22px;
+  line-height: 1.2;
+  letter-spacing: -0.035em;
+  margin: 0 0 12px;
+  overflow-wrap: anywhere;
+}
+.checkout-event-summary p {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
+}
+.checkout-event-summary svg {
+  color: var(--yellow);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
 .link-notice {
   display: flex;
   gap: 17px;
@@ -451,7 +494,7 @@ svg {
   letter-spacing: 0.17em;
   font-weight: 850;
 }
-.hero-duck {
+.hero-logo {
   width: 220px;
   height: 220px;
   object-fit: contain;
@@ -588,7 +631,7 @@ svg {
   border-radius: 6px;
   padding: 12px 13px;
   min-height: 46px;
-  font-size: 14px;
+  font-size: 16px;
   outline-offset: 2px;
   transition: border-color 0.15s;
 }
@@ -631,10 +674,12 @@ svg {
   line-height: 1.65;
   color: #ccd2c4;
   cursor: pointer;
+  min-height: 44px;
+  padding-block: 6px;
 }
 .check-field input {
-  width: 17px;
-  height: 17px;
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
   accent-color: var(--yellow);
   margin-top: 2px;
@@ -731,9 +776,9 @@ svg {
 }
 .event-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 390px;
-  gap: 75px;
-  padding-block: 65px 80px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
+  padding-block: 35px 50px;
   align-items: start;
 }
 .event-details > .eyebrow {
@@ -746,12 +791,12 @@ svg {
   align-items: flex-start;
   gap: 18px;
 }
-.event-title-row h1 {
+.event-title-row :is(h1, h2) {
   font-size: clamp(42px, 5.5vw, 68px);
   margin-bottom: 30px;
   overflow-wrap: anywhere;
 }
-.event-mascot {
+.event-logo {
   width: 80px;
   height: 80px;
   flex-shrink: 0;
@@ -814,7 +859,7 @@ svg {
   color: var(--yellow);
   margin-top: 3px;
 }
-.event-rules h2 {
+.event-rules :is(h2, h3) {
   font-size: 15px;
   letter-spacing: -0.015em;
   margin: 0 0 8px;
@@ -853,12 +898,11 @@ svg {
   color: var(--muted);
 }
 .checkout-panel {
-  padding: 27px;
+  padding: 24px;
   border: 1px solid #444b36;
   background: var(--surface);
-  border-radius: 12px;
-  position: sticky;
-  top: 28px;
+  border-radius: 10px;
+  position: static;
   box-shadow: 0 15px 35px #0002;
 }
 .checkout-top {
@@ -944,8 +988,8 @@ svg {
 }
 .order-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
-  gap: 35px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 25px;
   align-items: start;
 }
 .order-main > .notice {
@@ -1659,6 +1703,49 @@ svg {
     scale: 1.08;
   }
 }
+@media (min-width: 761px) {
+  .home-booking {
+    grid-template-columns: minmax(0, 1fr) 350px;
+    grid-template-areas: "intro checkout" "details checkout";
+    grid-template-rows: auto 1fr;
+    gap: 42px 35px;
+    padding-block: 65px 80px;
+  }
+  .home-booking .hero-copy h1 {
+    font-size: clamp(44px, 5vw, 68px);
+  }
+  .home-booking > .event-details {
+    padding-top: 0;
+  }
+  .event-layout {
+    grid-template-columns: minmax(0, 1fr) 350px;
+    gap: 35px;
+    padding-block: 65px 80px;
+  }
+  .checkout-panel {
+    position: sticky;
+    top: 28px;
+    border-radius: 12px;
+  }
+  .order-layout {
+    grid-template-columns: minmax(0, 1fr) 290px;
+    gap: 24px;
+  }
+}
+@media (min-width: 1051px) {
+  .home-booking,
+  .event-layout {
+    grid-template-columns: minmax(0, 1fr) 390px;
+    column-gap: 75px;
+  }
+  .checkout-panel {
+    padding: 27px;
+  }
+  .order-layout {
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 35px;
+  }
+}
 @media (max-width: 1050px) {
   .container {
     width: calc(100% - 56px);
@@ -1690,26 +1777,15 @@ svg {
     bottom: 5px;
     right: 0;
   }
-  .event-layout {
-    grid-template-columns: minmax(0, 1fr) 350px;
-    gap: 35px;
-  }
-  .event-mascot {
+  .event-logo {
     width: 60px;
     height: 60px;
   }
-  .event-title-row h1 {
+  .event-title-row :is(h1, h2) {
     font-size: 47px;
   }
   .event-date strong {
     font-size: 13px;
-  }
-  .checkout-panel {
-    padding: 24px;
-  }
-  .order-layout {
-    grid-template-columns: minmax(0, 1fr) 290px;
-    gap: 24px;
   }
   .order-summary {
     padding: 22px;
@@ -1743,14 +1819,8 @@ svg {
     gap: 10px;
   }
   .brand > img {
-    width: 43px;
-    height: 43px;
-  }
-  .brand strong {
-    font-size: 26px;
-  }
-  .brand small {
-    font-size: 8px;
+    width: 80px;
+    height: 80px;
   }
   .header-admin {
     font-size: 10px;
@@ -1880,12 +1950,7 @@ svg {
   .home-bottom .text-link {
     font-size: 11px;
   }
-  .event-layout {
-    grid-template-columns: 1fr;
-    padding-block: 35px 50px;
-    gap: 32px;
-  }
-  .event-title-row h1 {
+  .event-title-row :is(h1, h2) {
     font-size: 42px;
     margin-bottom: 26px;
   }
@@ -1898,7 +1963,7 @@ svg {
     gap: 12px;
     justify-content: space-between;
   }
-  .event-mascot {
+  .event-logo {
     width: 60px;
     height: 60px;
     margin-top: 0;
@@ -1925,7 +1990,7 @@ svg {
     gap: 15px;
     padding-block: 22px;
   }
-  .event-rules h2 {
+  .event-rules :is(h2, h3) {
     font-size: 14px;
   }
   .event-rules p {
@@ -1945,19 +2010,11 @@ svg {
   .event-bottom-rule p {
     font-size: 10px;
   }
-  .checkout-panel {
-    position: static;
-    padding: 24px;
-    border-radius: 10px;
-  }
   .checkout-price {
     font-size: 39px;
   }
   .checkout-top > .eyebrow {
     font-size: 10px;
-  }
-  .checkout-form .field input {
-    font-size: 16px;
   }
   .state-page {
     padding-block: 65px 75px;
@@ -1989,10 +2046,6 @@ svg {
   }
   .order-heading .eyebrow {
     font-size: 9px;
-  }
-  .order-layout {
-    grid-template-columns: 1fr;
-    gap: 25px;
   }
   .payment-card {
     padding: 30px 22px;
@@ -2219,10 +2272,10 @@ svg {
   .decorative-ticket {
     scale: 0.7;
   }
-  .event-title-row h1 {
+  .event-title-row :is(h1, h2) {
     font-size: 36px;
   }
-  .event-mascot {
+  .event-logo {
     width: 48px;
     height: 48px;
   }

@@ -6,7 +6,7 @@ import { errorResponse, json, rateLimit, readJson, sameOrigin } from "@/lib/serv
 export async function POST(request: Request) {
   try {
     sameOrigin(request); await rateLimit(request, "admin-login", 10, 900);
-    const input = z.object({ email: z.email().max(254), password: z.string().min(1).max(200) }).strict().parse(await readJson(request));
+    const input = z.object({ email: z.email().max(254), password: z.string().min(8).max(200) }).strict().parse(await readJson(request));
     const client = await authClient();
     const { data, error } = await client.auth.signInWithPassword(input);
     if (error || !data.user) throw new AppError("LOGIN_FAILED", "Acesso não autorizado. Confira suas credenciais.", 401);

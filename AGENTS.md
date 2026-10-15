@@ -1,7 +1,7 @@
 # K4 Ingressos
 
-Independent application. Modify only this repository; never modify ../k4-lounge or ../k4-tickets.
-Local-only work: no deploy, remote migrations, real payments or messaging.
+Independent application at D:/Projects/K4/k4-tickets. Modify only this repository; never modify ../k4-lounge or the former ../K4Ingressos directory.
+The user authorized the presentation-only Supabase/Vercel deployment on 2026-10-15. Preserve isolated local development. No real payments or messaging; other external actions still require user authorization. The user subsequently authorized persisted fictitious orders for the explicitly allowlisted demo event; never enable real payments. Deployment details: docs/RELEASE-2026-10-15.md.
 Next.js 16: consult relevant installed node_modules/next/dist/docs before using framework APIs.
 Use server-authoritative rules, Supabase persistence, restricted RLS, transactional idempotent confirmation.
 Never print secrets, CPF or tracking credentials. No public payment-confirmation endpoint.

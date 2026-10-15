@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description: "Ingressos digitais do K4 Lounge. Acesse o link do seu evento.",
   robots: { index: false, follow: false },
   referrer: "no-referrer",
-  icons: { icon: "/brand/duck.png" },
+  icons: { icon: "/brand/k4-logo.png" },
 };
 export const viewport: Viewport = {
   themeColor: "#0c0d0c",

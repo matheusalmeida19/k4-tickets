@@ -2,14 +2,14 @@
 
 Plataforma independente de ingressos do K4 Lounge, em Next.js App Router, TypeScript, Tailwind, PostgreSQL e Supabase Auth. Frontend e backend no mesmo projeto. O institucional não foi modificado.
 
-**Esta versão funciona localmente com pagamentos simulados. Nenhum Pix pagável é gerado. Não há integração bancária, envio de mensagens ou deploy. Ingressos simulados exibem “TESTE — SEM VALIDADE”.**
+**Demonstração pública: [k4-tickets.vercel.app](https://k4-tickets.vercel.app), sem vendas ou pagamentos reais. O modo publicado `demo` permite pedidos fictícios salvos no evento autorizado, com confirmação interna automática; o simulador `simulated` permanece local; nenhum Pix pagável é gerado e os ingressos simulados exibem “TESTE — SEM VALIDADE”. Não há integração bancária nem envio de mensagens.**
 
 ## Executar localmente
 
-Requisitos: Node.js 22+, npm e Docker Desktop em execução. Portas livres: 3008 (aplicação), 54331 (API Supabase), 54332 (PostgreSQL), 54333 (Studio), 54334 (caixa de e-mail local, sem envio externo).
+Requisitos: Node.js 22.x, npm e Docker Desktop em execução. Portas livres: 3009 (aplicação), 54331 (API Supabase), 54332 (PostgreSQL), 54333 (Studio), 54334 (caixa de e-mail local, sem envio externo).
 
 ```powershell
-cd D:\Projects\K4\K4Ingressos
+cd D:\Projects\K4\k4-tickets
 npm ci
 npm run db:start
 npm run db:migrate
@@ -37,9 +37,9 @@ npm run demo -- --open
 
 O comando imprime o caminho do evento de demonstração. Ele escolhe uma sexta-feira cujo encerramento ainda não passou e sugere quarta-feira às 20h e sábado às 00h de Manaus. Não cria evento real, capacidade ou restrição de CPF único.
 
-Na execução inicial, a demonstração foi aberta explicitamente em `/ingressos/demonstracao-local-2026-10-23`. Esse evento continuará sujeito ao prazo no servidor. A página inicial não contém catálogo.
+Na execução inicial, a demonstração foi aberta explicitamente em `/ingressos/demonstracao-local-2026-10-23`. Esse evento continuará sujeito ao prazo no servidor. Com a simulação local habilitada, a página inicial integra a apresentação do K4, os detalhes e o cadastro da próxima demonstração publicada criada pelo comando `demo`. O formulário fica à direita no computador e logo após a apresentação no celular. Datas, preço e disponibilidade vêm do mesmo evento no servidor; os links individuais continuam funcionando. A seleção automática local não promove rascunhos nem eventos reais. No ambiente publicado, `FEATURED_EVENT_SLUG` apresenta um evento publicado. O cadastro só abre quando `PAYMENT_PROVIDER=demo`, `DEMO_EVENT_SLUG` corresponde ao destaque, existe `DEMO_SECRET` privado e o evento é fictício com vendas abertas. A confirmação gera apenas ingresso de teste, sem Pix nem cobrança real.
 
-1. Abra o evento de demonstração; informe um nome fictício completo e um CPF matematicamente válido de teste (por exemplo, `123.456.789-09`, sem atribuí-lo a uma pessoa real).
+1. Na página inicial ou no link individual da demonstração, informe um nome fictício completo e um CPF matematicamente válido de teste (por exemplo, `123.456.789-09`, sem atribuí-lo a uma pessoa real).
 2. Leia as condições e continue no ambiente de teste. Salve o link privado completo da página do pedido.
 3. Copie apenas o UUID do pedido mostrado no resumo, para usar no terminal local:
 
@@ -114,7 +114,7 @@ npm run test:published
 
 Os testes de integração usam PostgreSQL real na porta 54332 e fixtures próprias, sem resets. E2E faz HTTP real para a aplicação e inclui Auth, cookies, isolamento entre pedidos, criação concorrente, confirmação interna, QR, máscaras, RLS, cadastro público negado e edição administrativa com conflito de versão. A suíte de banco cobre simultaneidade, snapshots, exceções, prazos, virada promocional preservando o ingresso e auditoria. Testes de domínio cobrem CPF/nome, limites de Manaus, payload adulterado, provedor indisponível e bloqueio de simulação em produção/preview. O teste `test:published` sobe e encerra seu próprio servidor de produção local, sem criar recursos externos.
 
-Última verificação: **39 testes aprovados** (10 unitários, 23 de integração real, 5 HTTP e 1 de produção/preview), lint, tipos e build aprovados. Revisão independente concluída sem pendências. Evidência detalhada em [docs/VERIFICATION.md](docs/VERIFICATION.md).
+Última verificação: **53 testes aprovados** (16 unitários, 24 de integração real, 8 HTTP e 5 de produção/preview), lint, tipos e build aprovados. Revisão independente da preparação sem bloqueadores materiais. Evidência detalhada em [docs/VERIFICATION.md](docs/VERIFICATION.md).
 
 Use somente as variáveis do projeto local. Os testes verificam o endereço isolado antes de escrever dados. Dados dos testes são fictícios e removidos pelos próprios testes. O evento e pedido de demonstração visual permanecem identificados como teste.
 
@@ -130,8 +130,10 @@ Antes de habilitar vendas reais: implementar o adapter e sua autenticação crip
 
 `app/` contém páginas e rotas HTTP; `components/` contém interface; `lib/domain/` contém contratos/regras puras; `lib/server/` orquestra persistência, Auth e pagamentos; `supabase/migrations/` contém o banco; `scripts/` contém ferramentas locais; `tests/` contém provas unitárias, PostgreSQL e HTTP.
 
-Repositório Git próprio já inicializado, sem commit/push nesta entrega. Dependências fixadas no lockfile. Logo do pato fornecida pelo usuário em `public/brand/duck.png`, sem redesenho; não foram inventados fotos, atrações ou endereço.
+Repositório Git próprio já inicializado, sem commit/push nesta entrega. Dependências fixadas no lockfile. Logo oficial do K4 Lounge em `public/brand/k4-logo.png`, com fundo transparente e resolução de 1254 × 1254 pixels, reutilizada sem redesenho; não foram inventados fotos, atrações ou endereço.
 
-Para futura Vercel, selecione **este** diretório como novo projeto Next.js e configure um Supabase separado e variáveis próprias. `APP_BASE_URL` é configurável, links de negócio são relativos. Não copie `.env.local`, `DATABASE_URL` local ou chaves privadas para variáveis `NEXT_PUBLIC_*`. Não há vínculo/deploy/credencial do institucional neste projeto.
+Configuração de Vercel e Supabase em [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md): build, variáveis por ambiente, migrations, Auth, primeiro administrador e verificações. `npm run deploy:check` recusa configuração local e valida o modo demo explícito no ambiente publicado; `npm run deploy:secrets` cria os segredos privados em arquivo ignorado, sem imprimi-los. `/api/health` verifica configuração publicada e uma RPC de leitura do banco, sem expor detalhes privados. Registro da demonstração autorizada em [docs/RELEASE-2026-10-15.md](docs/RELEASE-2026-10-15.md).
+
+`FEATURED_EVENT_SLUG` permite apresentar um evento publicado na home também fora do computador, mantendo a compra desabilitada enquanto o provedor real estiver indisponível. O layout do cadastro parte do celular, com uma coluna, fonte de 16px nos campos e controles de toque adequados; telas maiores recebem duas colunas.
 
 Fora desta versão: Pix bancário real, notificações por mensagem, recuperação assistida de links, scanner/check-in, operação offline, cartão/cupons/lotes/capacidade e reembolsos financeiros.

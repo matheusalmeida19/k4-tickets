@@ -1,5 +1,21 @@
 # Verificação — 14/10/2026
 
+## Atualização — página inicial com cadastro, 15/10/2026
+
+Escopo: somente `D:/Projects/K4/k4-tickets`, sem deploy. A apresentação e o evento de demonstração agora compartilham a página inicial. O checkout ocupa a coluna direita, no lugar da ilustração, e os detalhes ficam abaixo da apresentação na coluna esquerda. No layout móvel, a ordem é apresentação, cadastro e detalhes.
+
+O evento vem do Supabase local: próxima demonstração publicada e futura, criada com prefixo `demonstracao-local-`. Rascunhos e eventos reais não são promovidos. A disponibilidade e o pagamento continuam usando as mesmas verificações do servidor; `/ingressos/[slug]` reutiliza `EventDetails` e mantém os links individuais.
+
+Evidências novas: lint e TypeScript aprovados; 10 testes unitários, 23 de integração, 7 HTTP e 2 do artefato production/preview aprovados; build de produção local aprovado. Os testes novos verificam cadastro na home, seleção apenas de demonstração publicada, atualização de disponibilidade e preservação da rota individual. O artefato production/preview não exibe o cadastro de demonstração nem permite simulação.
+
+Um teste de integração preexistente comparava um prazo criado pelo relógio do computador com o relógio do Docker, usando apenas 50 ms de tolerância. Reproduziu tanto encerramento antecipado quanto ausência da rejeição esperada; a instrumentação mostrou prazo gravado ainda 243 ms no futuro para uma janela nominal de 200 ms. O teste passou a definir e aguardar o prazo no relógio do próprio banco. A suíte completa e duas repetições isoladas passaram, sem alteração das regras de vendas, RPCs ou migrações; a instrumentação temporária foi removida.
+
+Navegador Chrome: duas colunas no computador; uma coluna com cadastro antes dos detalhes no modo móvel; ausência de transbordamento horizontal nas larguras efetivas observadas (1686, 500 e 406 px). Validação de formulário vazio mostra erros de nome, CPF e aceite sem criar pedido. Não foi utilizado Safari/iPhone físico. Override de viewport removido ao final.
+
+## Evidência histórica da primeira versão
+
+Nota de localização, 15/10/2026: o usuário moveu o projeto para `D:/Projects/K4/k4-tickets`, agora o diretório autorizado. A evidência abaixo registra a execução original, anterior à mudança.
+
 Escopo: repositório independente `D:/Projects/K4/K4Ingressos`, branch main sem commits. Nenhum deploy, push, migration remota, banco Pix ou envio de mensagens. Site institucional protegido e sem alterações desta tarefa.
 
 ## Evidências executadas
@@ -48,3 +64,32 @@ Sem provedor Pix real, scanner/check-in, recuperação assistida, mensagens ou d
 Checkpoint: implementação → revisão independente concluída → entrega local. Proof e Review aprovados. Nenhuma etapa de shipping externo autorizada nesta solicitação.
 
 Next / upcoming task: none — sequence complete.
+
+## Preparação de publicação e mobile first — 15/10/2026
+
+Escopo: somente `k4-tickets`. Primeira publicação definida pelo usuário como demonstração sem pagamentos reais. Não foi executado deploy, criado banco remoto, aplicado SQL remoto ou modificado o institucional.
+
+| Verificação fresca | Resultado |
+| --- | --- |
+| `npm run lint` / `npm run typecheck` | exit 0 |
+| `npm run test` | 16 aprovados, incluindo preflight e ausência de segredos nos diagnósticos |
+| `npm run test:integration` | 24 aprovados no PostgreSQL local; catálogo confirma 6 migrations, 9 tabelas com RLS e 10 RPCs restritas |
+| `npm run test:e2e` | 8 aprovados, HTTP real e Auth local; health sem dados privados |
+| `npm run build` | exit 0; Next.js 16.3.4, incluindo `/api/health` |
+| `npm run test:published` | 5 aprovados no build real com flags Production/Preview; evento destacado publicado sem campos de comprador, rascunho oculto e nenhum pedido criado |
+| `npm run deploy:check`, sem variáveis publicadas | exit 1 esperado, lista somente os campos ausentes; `.env.local` não é carregado |
+| `npm run deploy:secrets` | arquivo privado criado sem valores no output e ignorado pelo Git/upload |
+
+Total: 53 testes aprovados. A primeira tentativa de integração no sandbox não acessou a porta local (`EACCES`); a execução autorizada fora dessa restrição passou integralmente. Não foi alterada regra de negócio para fazer testes passarem.
+
+Browser Chrome: larguras CSS efetivamente medidas de 320px e 391px usam `intro → checkout → detalhes`, sem rolagem horizontal; campos 16px, input ~50px e botão 49px. Em 768px e 1707px, duas colunas e nenhum transbordamento. Evento individual e login também conferidos em 320px, sem transbordamento e login com campos 16px. Envio vazio no cadastro mostrou os três erros de validação sem criar pedido. O controle temporário de viewport foi removido ao final. Não foi usado iPhone físico; não se afirma homologação em Safari/iOS.
+
+Revisão independente por leitura dos arquivos de publicação, home, guards, health e SQL concluída sem bloqueadores materiais. Limites: credenciais, Auth e estado do Supabase remoto ainda não verificados; publicação e migração remota não executadas. O guia `DEPLOYMENT.md` registra configuração e sequência para essa etapa.
+
+## Publicação autorizada — 15/10/2026
+
+Supabase exclusivo criado no plano Free, seis migrations aplicadas e três verificações de catálogo aprovadas. Auth com cadastro público/anonimato desativados e login por e-mail disponível para administradores provisionados pelo responsável. Evento fictício publicado com vendas pausadas; nenhuma conta administrativa de exemplo ou dado de comprador foi transferido.
+
+Next.js e ESLint Next atualizados de16.3.4 para16.3.8 após o alerta do build. Repetidos com sucesso: lint, tipos, build,16 unitários,24 integrações PostgreSQL local,8 HTTP e5 testes de artefato publicado. `npm audit --omit=dev`: zero alertas. Cinco avisos de desenvolvimento na cadeia de glob do ESLint foram classificados pela revisão independente como não bloqueadores de runtime desta demonstração, sem aplicar downgrade forçado.
+
+Deployment `dpl_4S51JZuqLcTZBeqqY9xRFUCbmpJr` Ready, build remoto aprovado e URL pública sem login https://k4-tickets.vercel.app. Health200/disabled; páginas públicas200; API administrativa401; compras503 `PAYMENT_UNAVAILABLE`; banco permaneceu com0 pedidos após o teste. Asset oficial da logo conferido por hash. Chrome publicado320/390/768/1280px sem overflow, com viewport restaurado. Evidências e recuperação em `RELEASE-2026-10-15.md`.

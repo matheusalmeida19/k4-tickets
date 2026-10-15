@@ -6,7 +6,7 @@ import { database } from "../lib/server/database";
 
 async function hiddenPassword(): Promise<string> {
   if (!process.stdin.isTTY) throw new Error("Use um terminal interativo ou forneça K4_ADMIN_PASSWORD por variável privada do processo.");
-  process.stdout.write("Senha escolhida por você (mínimo 12 caracteres; entrada oculta): ");
+  process.stdout.write("Senha escolhida por você (mínimo 8 caracteres; entrada oculta): ");
   const muted = new Writable({ write(_chunk, _encoding, callback) { callback(); } });
   const terminal = createInterface({ input: process.stdin, output: muted, terminal: true });
   try { return await terminal.question(""); } finally { terminal.close(); process.stdout.write("\n"); }
@@ -20,7 +20,7 @@ async function main() {
     try { email = await prompt.question("E-mail da conta administrativa local: "); } finally { prompt.close(); }
   }
   const password = process.env.K4_ADMIN_PASSWORD ?? await hiddenPassword();
-  if (!z.email().safeParse(email).success || password.length < 12 || password.length > 200) throw new Error("Informe um e-mail válido e uma senha escolhida por você com 12 a 200 caracteres.");
+  if (!z.email().safeParse(email).success || password.length < 8 || password.length > 200) throw new Error("Informe um e-mail válido e uma senha escolhida por você com 8 a 200 caracteres.");
   const db = database();
   const { data, error } = await db.auth.admin.createUser({ email, password, email_confirm: true });
   if (error || !data.user) throw new Error("Não foi possível criar a conta local. Confira os dados e se o usuário já existe. Nenhuma credencial foi exibida.");

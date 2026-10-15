@@ -49,6 +49,11 @@ after(async () => {
   await pg.end();
 });
 
+test("admin login rejects a password shorter than eight characters", async () => {
+  const response = await request("/api/admin/login", { email: adminEmail, password: "1234567" });
+  assert.equal(response.status, 400);
+});
+
 test("real HTTP checkout rejects forged fields and persists one idempotent order", async () => {
   const forged = await request("/api/orders", { ...purchase(), priceCents: 1, status: "confirmed" });
   assert.equal(forged.status, 400);

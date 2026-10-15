@@ -99,6 +99,15 @@ async function confirm(attempt: AttemptRow, overrides: Record<string, unknown> =
   return rpc<{ outcome: string; order_status: string | null; ticket_id: string | null }>("apply_payment_notification", [await notification(attempt, overrides), true], ["jsonb", "boolean"]);
 }
 
+test("hosted demo cannot reserve a non-test attempt in PostgreSQL", async () => {
+  const fixture = await event();
+  const created = await order(fixture.slug);
+  await assert.rejects(rpc("reserve_payment", [created.id, "demo", 900, false]), /payment_attempts_demo_must_test/);
+  const real = await event({ is_demo: false });
+  const realOrder = await order(real.slug);
+  await assert.rejects(rpc("reserve_payment", [realOrder.id, "demo", 900, true]), /INVALID_PAYMENT/);
+});
+
 before(async () => {
   await pool.query("select 1 from public.events limit 0");
   await pool.query("insert into auth.users(id,aud,role,email,created_at,updated_at) values($1,'authenticated','authenticated',$2,now(),now())", [actorId, `${prefix}@example.test`]);
@@ -318,9 +327,12 @@ test("notification ID collisions cannot replace an authenticated observation", a
 });
 
 test("closing race preserves an order but forbids charging and expires it without an attempt", async () => {
-  const selected = await event({ sales_closes_at: new Date(Date.now() + 200) });
+  const selected = await event();
+  // Use the authoritative clock for both the deadline and wait; the host clock
+  // can differ from Docker by more than the old test's 50ms tolerance.
+  await pool.query("update public.events set sales_closes_at=clock_timestamp()+interval '1 second' where id=$1", [selected.id]);
   const created = await order(selected.slug);
-  await pool.query("select pg_sleep(0.25)");
+  await pool.query("select pg_sleep(greatest(0,extract(epoch from (sales_closes_at-clock_timestamp())))+0.02) from public.events where id=$1", [selected.id]);
   await assert.rejects(rpc("reserve_payment", [created.id, "simulated", 900, true]), /EVENT_UNAVAILABLE/);
   const expired = await rpc<OrderRow>("expire_order", [created.id]);
   assert.equal(expired.status, "expired");

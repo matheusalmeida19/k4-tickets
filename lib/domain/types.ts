@@ -9,7 +9,7 @@ export interface EventRecord {
   isDemo: boolean; version: number; createdAt: string; updatedAt: string;
 }
 export interface PublicEvent extends EventRecord {
-  availability: SalesAvailability; paymentMode: "simulated" | "unavailable";
+  availability: SalesAvailability; paymentMode: "simulated" | "demo" | "unavailable";
   serverNow: string;
 }
 export interface EventInput {

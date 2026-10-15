@@ -57,6 +57,7 @@ export function AdminLogin() {
           name="password"
           id="admin-password"
           autoComplete="current-password"
+          minLength={8}
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -73,8 +74,7 @@ export function AdminLogin() {
         <Icon name="arrow" />
       </button>
       <p className="small muted login-provision">
-        O primeiro administrador precisa ser provisionado pelo responsável
-        técnico. Não há cadastro público.
+        Senha com no mínimo 8 caracteres. Não há cadastro público.
       </p>
     </form>
   );

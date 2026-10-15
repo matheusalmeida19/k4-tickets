@@ -2,9 +2,14 @@
   "name": "k4-ingressos",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "dev": "next dev --hostname 127.0.0.1 --port 3009",
     "build": "next build",
+    "deploy:check": "tsx scripts/check-deployment.ts",
+    "deploy:secrets": "tsx scripts/deployment-secrets.ts",
     "start": "next start --hostname 127.0.0.1 --port 3009",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
@@ -23,7 +28,7 @@
   "dependencies": {
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "2.117.2",
-    "next": "16.3.4",
+    "next": "16.3.8",
     "qrcode": "^1.5.4",
     "react": "19.2.6",
     "react-dom": "19.2.6",
@@ -37,7 +42,7 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "eslint": "^9.39.0",
-    "eslint-config-next": "16.3.4",
+    "eslint-config-next": "16.3.8",
     "pg": "^8.16.3",
     "supabase": "^2.58.0",
     "tailwindcss": "4.2.1",
