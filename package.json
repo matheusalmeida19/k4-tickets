@@ -1,0 +1,47 @@
+{
+  "name": "k4-ingressos",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1 --port 3009",
+    "build": "next build",
+    "start": "next start --hostname 127.0.0.1 --port 3009",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test tests/*.test.ts",
+    "test:integration": "tsx --env-file=.env.local --test --test-concurrency=1 tests/integration/*.test.ts",
+    "db:start": "tsx scripts/local-stack.ts start",
+    "db:stop": "tsx scripts/local-stack.ts stop",
+    "db:migrate": "supabase migration up --local",
+    "local:env": "tsx scripts/local-env.ts",
+    "demo": "tsx --env-file=.env.local scripts/demo.ts",
+    "admin:provision": "tsx --env-file=.env.local scripts/provision-admin.ts",
+    "simulate": "tsx --env-file=.env.local scripts/simulate.ts",
+    "test:e2e": "tsx --env-file=.env.local --test --test-concurrency=1 tests/e2e/*.test.ts",
+    "test:published": "tsx --env-file=.env.local --test tests/published/*.test.ts"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.7.0",
+    "@supabase/supabase-js": "2.117.2",
+    "next": "16.3.4",
+    "qrcode": "^1.5.4",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.2.1",
+    "@types/node": "^22.10.0",
+    "@types/pg": "^8.15.5",
+    "@types/qrcode": "^1.5.6",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "eslint": "^9.39.0",
+    "eslint-config-next": "16.3.4",
+    "pg": "^8.16.3",
+    "supabase": "^2.58.0",
+    "tailwindcss": "4.2.1",
+    "tsx": "^4.20.6",
+    "typescript": "5.9.3"
+  }
+}
